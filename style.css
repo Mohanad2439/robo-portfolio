@@ -1,0 +1,14 @@
+*{
+    background-color: black;
+}
+
+#platform{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#robot{
+    margin-left: auto;
+    margin-right: auto;
+    background: none;
+}
