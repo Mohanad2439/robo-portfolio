@@ -5,21 +5,313 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="style.css" rel="stylesheet">
     </head>
-    <body>
-        <div id="platform">
-            <div id="robot">
-                <div id="antenna"></div>
-                <div id="head">
-                    <div id="l-eye"></div>
-                    <div id="r-eye"></div>
-                    <div id="mouth"></div>
-                </div>
-                <div id="l-arm"></div>
-                <div id="torso"></div>
-                <div id="r-arm"></div>
-                <div id="l-leg"></div>
-                <div id="r-leg"></div>
-            </div>
+<body>
+<div id="app">
+  <div id="sky"></div>
+
+  <!-- GAME -->
+  <div id="game-screen">
+    <div id="hud">
+      <div class="who">climbing <b id="who-name"></b>'s tower</div>
+      <div id="rungs"></div>
+      <div id="counter"><b id="idx-now">0</b> / <span id="idx-total">0</span></div>
+    </div>
+
+    <div id="scene">
+      <div id="stage">
+        <div class="side-panel left" id="panel-left">
+          <div class="proj-name" id="name-left"></div>
+          <div class="proj-desc" id="desc-left"></div>
+          <div class="proj-links" id="links-left"></div>
         </div>
-    </body>
+        <div class="side-panel right" id="panel-right">
+          <div class="proj-name" id="name-right"></div>
+          <div class="proj-desc" id="desc-right"></div>
+          <div class="proj-links" id="links-right"></div>
+        </div>
+        <div class="level-tag left pixel" id="tag-left"></div>
+        <div class="level-tag right pixel" id="tag-right"></div>
+
+        <div id="track-viewport">
+          <div id="track"></div>
+        </div>
+
+        <div id="robot-anchor">
+          <div id="robot">
+            <div class="r-antenna"></div>
+            <div class="r-head">
+              <div class="r-eye l"></div>
+              <div class="r-eye r"></div>
+            </div>
+            <div class="r-arm l"></div>
+            <div class="r-arm r"></div>
+            <div class="r-body"></div>
+            <div class="r-leg l"></div>
+            <div class="r-leg r"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="controls">tap the robot / press <b>SPACE</b> to jump to the next project</div>
+  </div>
+
+  <!-- END -->
+  <div id="end-screen">
+    <div class="card">
+      <h1 class="pixel">TOP OF<br>THE TOWER</h1>
+      <p class="sub" id="end-summary"></p>
+      <button id="restart-btn" class="pixel">CLIMB AGAIN</button>
+      <div class="restart-hint">this is a UI demo &mdash; wire it up to a real GitHub username later</div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const gameScreen = document.getElementById('game-screen');
+  const endScreen = document.getElementById('end-screen');
+  const robot = document.getElementById('robot');
+  const track = document.getElementById('track');
+  const stage = document.getElementById('stage');
+  const rungsEl = document.getElementById('rungs');
+  const idxNow = document.getElementById('idx-now');
+  const idxTotal = document.getElementById('idx-total');
+  const whoName = document.getElementById('who-name');
+  const restartBtn = document.getElementById('restart-btn');
+  const endSummary = document.getElementById('end-summary');
+  const sky = document.getElementById('sky');
+
+  const panels = {
+    left: {
+      wrap: document.getElementById('panel-left'),
+      name: document.getElementById('name-left'),
+      desc: document.getElementById('desc-left'),
+      links: document.getElementById('links-left'),
+    },
+    right: {
+      wrap: document.getElementById('panel-right'),
+      name: document.getElementById('name-right'),
+      desc: document.getElementById('desc-right'),
+      links: document.getElementById('links-right'),
+    }
+  };
+  const tagLeft = document.getElementById('tag-left');
+  const tagRight = document.getElementById('tag-right');
+
+  const PALETTE = ['#232a52','#2a2f5c','#232447','#2c2456','#1f2b52','#26264f'];
+  const TILE_H = 24;
+  const TILE_GAP = 58;
+  const TILE_STEP = TILE_H + TILE_GAP;
+
+  let projects = [];
+  let index = -1;
+  let busy = false;
+  let audioCtx = null;
+
+  // -------- starfield --------
+  function makeStars(){
+    for(let i=0;i<50;i++){
+      const s = document.createElement('div');
+      s.className = 'star' + (Math.random() < 0.25 ? ' big' : '');
+      s.style.left = Math.random()*100 + '%';
+      s.style.top = Math.random()*70 + '%';
+      s.style.opacity = (0.2 + Math.random()*0.6).toFixed(2);
+      sky.appendChild(s);
+    }
+  }
+  makeStars();
+
+  // -------- sound --------
+  function blip(freq, dur){
+    try{
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = 'square';
+      o.frequency.value = freq;
+      g.gain.value = 0.05;
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start();
+      g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
+      o.stop(audioCtx.currentTime + dur);
+    }catch(e){}
+  }
+
+  // -------- dummy project data (UI demo, no live GitHub call) --------
+  const DUMMY_PROJECTS = [
+    { name:'pixel-forge', description:'A lightweight sprite editor for retro games, built with canvas and no dependencies.', url:'https://github.com/example/pixel-forge', demo:'https://example.com/pixel-forge' },
+    { name:'weather-nomad', description:'CLI tool that fetches a week-ahead forecast for any city and renders it as ASCII art.', url:'https://github.com/example/weather-nomad', demo:null },
+    { name:'task-orbit', description:'A minimal kanban board with keyboard-first navigation and offline support.', url:'https://github.com/example/task-orbit', demo:'https://example.com/task-orbit' },
+    { name:'synthwave-player', description:'Browser audio visualizer that reacts to synthwave tracks in real time using the Web Audio API.', url:'https://github.com/example/synthwave-player', demo:'https://example.com/synthwave-player' },
+    { name:'note-cipher', description:'End-to-end encrypted note-taking app with a zero-knowledge sync server.', url:'https://github.com/example/note-cipher', demo:null },
+    { name:'trail-mapper', description:'Generates interactive hiking trail maps from raw GPX files, with elevation charts.', url:'https://github.com/example/trail-mapper', demo:'https://example.com/trail-mapper' },
+  ];
+
+  // -------- tile track --------
+  function buildTiles(){
+    track.innerHTML = '';
+    track.style.transform = `translateX(-50%) translateY(0px)`;
+    projects.forEach((proj, i) => {
+      const tile = document.createElement('div');
+      tile.className = 'tile';
+      tile.style.background = PALETTE[i % PALETTE.length];
+      const num = document.createElement('div');
+      num.className = 'tile-num';
+      num.textContent = String(i+1).padStart(2,'0');
+      tile.appendChild(num);
+      track.appendChild(tile);
+    });
+  }
+  function moveTrackTo(i){
+    track.style.transform = `translateX(-50%) translateY(${i*TILE_STEP}px)`;
+    const tiles = track.children;
+    for(let t=0;t<tiles.length;t++){
+      tiles[t].classList.toggle('active', t === i);
+      tiles[t].classList.toggle('visited', t < i);
+    }
+  }
+
+  // -------- HUD --------
+  function buildRungs(){
+    rungsEl.innerHTML = '';
+    const max = 24;
+    const total = projects.length;
+    const showCount = Math.min(total, max);
+    for(let i=0;i<showCount;i++){
+      const d = document.createElement('div');
+      d.className = 'rung';
+      d.dataset.i = i;
+      rungsEl.appendChild(d);
+    }
+    idxTotal.textContent = total;
+  }
+  function updateRungs(){
+    const kids = rungsEl.children;
+    for(let i=0;i<kids.length;i++){
+      kids[i].classList.toggle('done', i < index);
+      kids[i].classList.toggle('current', i === index);
+    }
+    idxNow.textContent = Math.min(index+1, projects.length);
+  }
+
+  // -------- particles --------
+  function burstDust(){
+    for(let i=0;i<8;i++){
+      const p = document.createElement('div');
+      p.className = 'dust';
+      const angle = Math.random()*Math.PI - Math.PI/2 - Math.PI/2;
+      const dist = 20 + Math.random()*30;
+      p.style.setProperty('--dx', Math.cos(angle)*dist + 'px');
+      p.style.setProperty('--dy', Math.abs(Math.sin(angle))*dist*-1 + 'px');
+      p.style.animation = 'dustpop 0.5s ease-out forwards';
+      stage.appendChild(p);
+      setTimeout(()=>p.remove(), 550);
+    }
+  }
+
+  // -------- render a project onto side panels --------
+  function renderProject(i){
+    const proj = projects[i];
+    const side = (i % 2 === 0) ? 'left' : 'right';
+    const other = side === 'left' ? 'right' : 'left';
+
+    // hide both, clear
+    panels.left.wrap.classList.remove('show');
+    panels.right.wrap.classList.remove('show');
+    tagLeft.textContent = '';
+    tagRight.textContent = '';
+
+    const p = panels[side];
+    p.name.textContent = proj.name;
+    p.desc.textContent = proj.description;
+    p.links.innerHTML = '';
+
+    const codeLink = document.createElement('a');
+    codeLink.href = proj.url; codeLink.target = '_blank'; codeLink.rel = 'noopener';
+    codeLink.className = 'link-pill';
+    codeLink.textContent = 'VIEW CODE';
+    p.links.appendChild(codeLink);
+
+    if(proj.demo){
+      const demoLink = document.createElement('a');
+      demoLink.href = proj.demo; demoLink.target = '_blank'; demoLink.rel = 'noopener';
+      demoLink.className = 'link-pill demo';
+      demoLink.textContent = 'LIVE DEMO';
+      p.links.appendChild(demoLink);
+    }
+
+    const tag = side === 'left' ? tagRight : tagLeft;
+    tag.textContent = String(i+1).padStart(2,'0');
+
+    // stagger the panel reveal slightly after the hop lands
+    setTimeout(()=>{ p.wrap.classList.add('show'); }, 260);
+
+    // platform color shift per level
+    sky.style.filter = `hue-rotate(${(i*14)%360}deg)`;
+  }
+
+  function advance(){
+    if(busy) return;
+    if(index + 1 >= projects.length){
+      finish();
+      return;
+    }
+    busy = true;
+    index++;
+    blip(520 + index*6, 0.12);
+    robot.classList.remove('jump');
+    void robot.offsetWidth; // restart animation
+    robot.classList.add('jump');
+    moveTrackTo(index);
+    burstDust();
+    updateRungs();
+    setTimeout(()=>{
+      renderProject(index);
+      busy = false;
+    }, 180);
+  }
+
+  function finish(){
+    panels.left.wrap.classList.remove('show');
+    panels.right.wrap.classList.remove('show');
+    gameScreen.style.display = 'none';
+    endScreen.style.display = 'flex';
+    endSummary.textContent = `You climbed through ${projects.length} project${projects.length===1?'':'s'} in ${whoName.textContent}'s tower. Nice work, robot.`;
+    blip(780, 0.18);
+    setTimeout(()=>blip(980, 0.22), 150);
+  }
+
+  function launch(){
+    gameScreen.style.display = 'block';
+    endScreen.style.display = 'none';
+    index = -1;
+    sky.style.filter = 'none';
+    buildTiles();
+    buildRungs();
+    updateRungs();
+    // small delay so the scene is visible before the first hop
+    setTimeout(advance, 300);
+  }
+
+  robot.addEventListener('click', advance);
+  window.addEventListener('keydown', (e)=>{
+    if(e.code === 'Space' || e.code === 'ArrowUp'){
+      e.preventDefault();
+      advance();
+    }
+  });
+  restartBtn.addEventListener('click', ()=>{
+    projects = DUMMY_PROJECTS;
+    launch();
+  });
+
+  // boot straight into the demo tower
+  projects = DUMMY_PROJECTS;
+  whoName.textContent = 'demo';
+  launch();
+
+})();
+</script>
+</body>
 </html>
