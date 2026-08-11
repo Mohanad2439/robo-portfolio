@@ -122,31 +122,12 @@
   }
   makeStars();
 
-  // -------- sound --------
-  function blip(freq, dur){
-    try{
-      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-      const o = audioCtx.createOscillator();
-      const g = audioCtx.createGain();
-      o.type = 'square';
-      o.frequency.value = freq;
-      g.gain.value = 0.05;
-      o.connect(g); g.connect(audioCtx.destination);
-      o.start();
-      g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
-      o.stop(audioCtx.currentTime + dur);
-    }catch(e){}
-  }
-
   // -------- dummy project data (UI demo, no live GitHub call) --------
   const DUMMY_PROJECTS = [
-    { name:'pixel-forge', description:'A lightweight sprite editor for retro games, built with canvas and no dependencies.', url:'https://github.com/example/pixel-forge', demo:'https://example.com/pixel-forge' },
-    { name:'weather-nomad', description:'CLI tool that fetches a week-ahead forecast for any city and renders it as ASCII art.', url:'https://github.com/example/weather-nomad', demo:null },
-    { name:'task-orbit', description:'A minimal kanban board with keyboard-first navigation and offline support.', url:'https://github.com/example/task-orbit', demo:'https://example.com/task-orbit' },
-    { name:'synthwave-player', description:'Browser audio visualizer that reacts to synthwave tracks in real time using the Web Audio API.', url:'https://github.com/example/synthwave-player', demo:'https://example.com/synthwave-player' },
-    { name:'note-cipher', description:'End-to-end encrypted note-taking app with a zero-knowledge sync server.', url:'https://github.com/example/note-cipher', demo:null },
-    { name:'trail-mapper', description:'Generates interactive hiking trail maps from raw GPX files, with elevation charts.', url:'https://github.com/example/trail-mapper', demo:'https://example.com/trail-mapper' },
-  ];
+    { name:'Off-side_Store', description:'commerce demo that implements product browsing, cart management, and a mocked checkout flow. It’s a practical project intended to show clean UI, basic state management, and a simple frontend ', url:'https://github.com/Mohanad2439/Off-side_Store', demo:'https://example.com/synthwave-player' },
+    { name:'Pixel-Car-Game', description:'End-to-end encrypted note-taking app with a zero-knowledge sync server.', url:'https://github.com/example/note-cipher', demo:null },
+    { name:'MCPharm', description:'Generates interactive hiking trail maps from raw GPX files, with elevation charts.', url:'https://github.com/example/trail-mapper', demo:'https://example.com/trail-mapper' },
+  ]
 
   // -------- tile track --------
   function buildTiles(){
