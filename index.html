@@ -124,7 +124,7 @@
 
   // -------- dummy project data (UI demo, no live GitHub call) --------
   const DUMMY_PROJECTS = [
-    { name:'Off-side_Store', description:'commerce demo that implements product browsing, cart management, and a mocked checkout flow. It’s a practical project intended to show clean UI, basic state management, and a simple frontend ', url:'https://github.com/Mohanad2439/Off-side_Store', demo:'https://example.com/synthwave-player' },
+    { name:'Off-side_Store', description:'commerce demo that implements product browsing, cart management, and a mocked checkout flow. It is a practical project intended to show clean UI, basic state management, and a simple frontend ', url:'https://github.com/Mohanad2439/Off-side_Store', demo:'https://example.com/synthwave-player' },
     { name:'Pixel-Car-Game', description:'End-to-end encrypted note-taking app with a zero-knowledge sync server.', url:'https://github.com/example/note-cipher', demo:null },
     { name:'MCPharm', description:'Generates interactive hiking trail maps from raw GPX files, with elevation charts.', url:'https://github.com/example/trail-mapper', demo:'https://example.com/trail-mapper' },
   ]
@@ -132,7 +132,7 @@
   // -------- tile track --------
   function buildTiles(){
     track.innerHTML = '';
-    track.style.transform = `translateX(-50%) translateY(0px)`;
+    track.style.transform = `translateX(-49%) translateY(0px)`;
     projects.forEach((proj, i) => {
       const tile = document.createElement('div');
       tile.className = 'tile';
@@ -240,7 +240,6 @@
     }
     busy = true;
     index++;
-    blip(520 + index*6, 0.12);
     robot.classList.remove('jump');
     void robot.offsetWidth; // restart animation
     robot.classList.add('jump');
@@ -259,8 +258,6 @@
     gameScreen.style.display = 'none';
     endScreen.style.display = 'flex';
     endSummary.textContent = `You climbed through ${projects.length} project${projects.length===1?'':'s'} in ${whoName.textContent}'s tower. Nice work, robot.`;
-    blip(780, 0.18);
-    setTimeout(()=>blip(980, 0.22), 150);
   }
 
   function launch(){
