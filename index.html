@@ -4,6 +4,9 @@
         <title>Robo Portfolio</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="style.css" rel="stylesheet">
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Bungee&display=swap');
+        </style>
     </head>
 <body>
 <div id="app">
@@ -12,7 +15,7 @@
   <!-- GAME -->
   <div id="game-screen">
     <div id="hud">
-      <div class="who">climbing <b id="who-name"></b>'s tower</div>
+      <div class="who">climbing <b id="who-name">Mohanad</b>'s tower</div>
       <div id="rungs"></div>
       <div id="counter"><b id="idx-now">0</b> / <span id="idx-total">0</span></div>
     </div>
@@ -124,9 +127,9 @@
 
   // -------- dummy project data (UI demo, no live GitHub call) --------
   const DUMMY_PROJECTS = [
-    { name:'Off-side_Store', description:'commerce demo that implements product browsing, cart management, and a mocked checkout flow. It is a practical project intended to show clean UI, basic state management, and a simple frontend ', url:'https://github.com/Mohanad2439/Off-side_Store', demo:'https://example.com/synthwave-player' },
-    { name:'Pixel-Car-Game', description:'End-to-end encrypted note-taking app with a zero-knowledge sync server.', url:'https://github.com/example/note-cipher', demo:null },
-    { name:'MCPharm', description:'Generates interactive hiking trail maps from raw GPX files, with elevation charts.', url:'https://github.com/example/trail-mapper', demo:'https://example.com/trail-mapper' },
+    { name:'Off-side_Store', description:'A football/soccer-themed e-commerce store website, deployed via GitHub Pages. Built as a front-end web project showcasing product browsing for a sports apparel storefront', url:'https://github.com/Mohanad2439/Off-side_Store', demo:'https://example.com/synthwave-player' },
+    { name:'Pixel-Car-Game', description:'A simple 2D car game built in C# using Windows Forms. Features basic car movement controls, collision detection, and score tracking, with a compiled executable available for direct play.', url:'https://github.com/Mohanad2439/Pixel-Car-Game', demo:null },
+    { name:'MCPharm', description:'MCPharm is a PHP web application for an online pharmacy, featuring product search and browsing, a shopping cart, and an end-to-end checkout process (delivery details → order confirmation)', url:'https://github.com/Mohanad2439/MC-Pharm.-.', demo:null },
   ]
 
   // -------- tile track --------
@@ -268,7 +271,6 @@
     buildTiles();
     buildRungs();
     updateRungs();
-    // small delay so the scene is visible before the first hop
     setTimeout(advance, 300);
   }
 

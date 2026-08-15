@@ -15,7 +15,7 @@
     margin:0; padding:0; height:100%;
     background:var(--sky-1);
     color:var(--paper);
-    font-family:'JetBrains Mono', monospace;
+    font-family:'Bungee', sans-serif;
     overflow:hidden;
     -webkit-tap-highlight-color:transparent;
     user-select:none;
@@ -33,10 +33,17 @@
     transition:filter 0.6s ease;
   }
   .star{
-    position:absolute; width:2px; height:2px; background:var(--mist);
-    opacity:0.6; border-radius:0;
+    position:absolute;
+    width:2px;
+    height:2px;
+    background:var(--mist);
+    opacity:0.6;
+    border-radius:0;
   }
-  .star.big{ width:3px; height:3px; background:var(--lavender); }
+  .star.big{
+    width:3px;
+    height:3px;
+    background:var(--lavender); }
 
   .card{
     background:rgba(20,25,54,0.9);
@@ -54,7 +61,7 @@
   .card .sub{ color:var(--mist); font-size:12px; margin:0 0 26px; line-height:1.6;}
   button{
     cursor:pointer;
-    font-family:'Press Start 2P', monospace;
+    font-family:'Bungee', sane-serif;
     font-size:11px;
     border:none;
     padding:13px 16px;
@@ -89,8 +96,11 @@
 
   /* ---------- scene ---------- */
   #scene{
-    position:absolute; inset:0;
-    display:flex; align-items:flex-end; justify-content:center;
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
   }
   #stage{
     position:relative;
