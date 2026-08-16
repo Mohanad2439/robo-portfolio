@@ -126,10 +126,10 @@
   makeStars();
 
   // -------- dummy project data (UI demo, no live GitHub call) --------
-  const DUMMY_PROJECTS = [
-    { name:'Off-side_Store', description:'A football/soccer-themed e-commerce store website, deployed via GitHub Pages. Built as a front-end web project showcasing product browsing for a sports apparel storefront', url:'https://github.com/Mohanad2439/Off-side_Store', demo:'https://example.com/synthwave-player' },
-    { name:'Pixel-Car-Game', description:'A simple 2D car game built in C# using Windows Forms. Features basic car movement controls, collision detection, and score tracking, with a compiled executable available for direct play.', url:'https://github.com/Mohanad2439/Pixel-Car-Game', demo:null },
-    { name:'MCPharm', description:'MCPharm is a PHP web application for an online pharmacy, featuring product search and browsing, a shopping cart, and an end-to-end checkout process (delivery details → order confirmation)', url:'https://github.com/Mohanad2439/MC-Pharm.-.', demo:null },
+  const MY_PROJECTS = [
+    { name:'Off-side Store', description:'A football/soccer-themed e-commerce store website, deployed via GitHub Pages. Built as a front-end web project showcasing product browsing for a sports apparel storefront', url:'https://github.com/Mohanad2439/Off-side_Store', demo:'https://example.com/synthwave-player' },
+    { name:'Pixel Car Game', description:'A simple 2D car game built in C# using Windows Forms. Features basic car movement controls, collision detection, and score tracking, with a compiled executable available for direct play.', url:'https://github.com/Mohanad2439/Pixel-Car-Game', demo:null },
+    { name:'MCPharm', description:'A PHP web application for an online pharmacy, featuring product search and browsing, a shopping cart, and an end-to-end checkout process (delivery details → order confirmation)', url:'https://github.com/Mohanad2439/MC-Pharm.-.', demo:null },
   ]
 
   // -------- tile track --------
@@ -282,12 +282,11 @@
     }
   });
   restartBtn.addEventListener('click', ()=>{
-    projects = DUMMY_PROJECTS;
+    projects = MY_PROJECTS;
     launch();
   });
 
-  // boot straight into the demo tower
-  
+  projects=MY_PROJECTS;
   launch();
 
 })();

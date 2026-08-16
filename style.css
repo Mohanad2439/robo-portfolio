@@ -348,8 +348,14 @@
     display:none; align-items:center; justify-content:center;
     background:rgba(9,12,26,0.88);
   }
-  #end-screen .card h1{ color:var(--coral); }
-  .restart-hint{ font-size:11px; color:var(--mist); margin-top:18px; }
+  #end-screen .card h1{ 
+    color:var(--coral);
+  }
+  .restart-hint{
+    font-size:11px;
+    color:var(--mist);
+    margin-top:18px;
+  }
 
   [hidden]{ display:none !important; }
 
