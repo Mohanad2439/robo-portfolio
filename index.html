@@ -32,8 +32,6 @@
           <div class="proj-desc" id="desc-right"></div>
           <div class="proj-links" id="links-right"></div>
         </div>
-        <div class="level-tag left pixel" id="tag-left"></div>
-        <div class="level-tag right pixel" id="tag-right"></div>
 
         <div id="track-viewport">
           <div id="track"></div>
@@ -99,8 +97,6 @@
       links: document.getElementById('links-right'),
     }
   };
-  const tagLeft = document.getElementById('tag-left');
-  const tagRight = document.getElementById('tag-right');
 
   const PALETTE = ['#232a52','#2a2f5c','#232447','#2c2456','#1f2b52','#26264f'];
   const TILE_H = 24;
@@ -203,8 +199,6 @@
     // hide both, clear
     panels.left.wrap.classList.remove('show');
     panels.right.wrap.classList.remove('show');
-    tagLeft.textContent = '';
-    tagRight.textContent = '';
 
     const p = panels[side];
     p.name.textContent = proj.name;
@@ -214,7 +208,7 @@
     const codeLink = document.createElement('a');
     codeLink.href = proj.url; codeLink.target = '_blank'; codeLink.rel = 'noopener';
     codeLink.className = 'link-pill';
-    codeLink.textContent = 'VIEW CODE';
+    codeLink.textContent = 'Go to Repo';
     p.links.appendChild(codeLink);
 
     if(proj.demo){
@@ -225,8 +219,6 @@
       p.links.appendChild(demoLink);
     }
 
-    const tag = side === 'left' ? tagRight : tagLeft;
-    tag.textContent = String(i+1).padStart(2,'0');
 
     // stagger the panel reveal slightly after the hop lands
     setTimeout(()=>{ p.wrap.classList.add('show'); }, 260);

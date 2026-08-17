@@ -344,10 +344,19 @@
 
   /* ---------- end screen ---------- */
   #end-screen{
-    position:absolute; inset:0; z-index:30;
-    display:none; align-items:center; justify-content:center;
+    position:absolute;
+    inset:0;
+    z-index:30;
+    display:none;
+    align-items:center;
+    justify-content:center;
     background:rgba(9,12,26,0.88);
   }
+
+  #end-screen .card{
+    border-radius: 15px;    
+  }
+
   #end-screen .card h1{ 
     color:var(--coral);
   }
@@ -355,6 +364,11 @@
     font-size:11px;
     color:var(--mist);
     margin-top:18px;
+  }
+
+  #restart-btn{
+    border-radius: 15px;
+    font-family: Bungee, sans-serif;
   }
 
   [hidden]{ display:none !important; }
