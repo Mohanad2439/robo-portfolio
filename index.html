@@ -7,6 +7,7 @@
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Bungee&display=swap');
         </style>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
 <body>
 <div id="app">
@@ -25,11 +26,8 @@
         <div class="side-panel left" id="panel-left">
           <div class="proj-name" id="name-left"></div>
           <div class="proj-desc" id="desc-left"></div>
-          <div class="proj-links" id="links-left"></div>
         </div>
         <div class="side-panel right" id="panel-right">
-          <div class="proj-name" id="name-right"></div>
-          <div class="proj-desc" id="desc-right"></div>
           <div class="proj-links" id="links-right"></div>
         </div>
 
@@ -88,12 +86,9 @@
       wrap: document.getElementById('panel-left'),
       name: document.getElementById('name-left'),
       desc: document.getElementById('desc-left'),
-      links: document.getElementById('links-left'),
     },
     right: {
       wrap: document.getElementById('panel-right'),
-      name: document.getElementById('name-right'),
-      desc: document.getElementById('desc-right'),
       links: document.getElementById('links-right'),
     }
   };
@@ -193,35 +188,46 @@
   // -------- render a project onto side panels --------
   function renderProject(i){
     const proj = projects[i];
-    const side = (i % 2 === 0) ? 'left' : 'right';
-    const other = side === 'left' ? 'right' : 'left';
+    const left = 'left';
+    const right = 'right';
 
     // hide both, clear
     panels.left.wrap.classList.remove('show');
     panels.right.wrap.classList.remove('show');
 
-    const p = panels[side];
-    p.name.textContent = proj.name;
-    p.desc.textContent = proj.description;
-    p.links.innerHTML = '';
+    const l = panels[left];
+    l.name.textContent = proj.name;
+    l.desc.textContent = proj.description;
+
+    const r = panels[right];
+    r.links.innerHTML = '';
 
     const codeLink = document.createElement('a');
-    codeLink.href = proj.url; codeLink.target = '_blank'; codeLink.rel = 'noopener';
+    codeLink.href = proj.url;
+    codeLink.target = '_blank';
+    codeLink.rel = 'noopener';
     codeLink.className = 'link-pill';
-    codeLink.textContent = 'Go to Repo';
-    p.links.appendChild(codeLink);
+/*
+    const gh = document.createElement('i');
+    gh.className = 'fa';
+    gh.textContent = '&#xf09b;';
+*/
+    codeLink.textContent = 'View Code';
+    r.links.appendChild(codeLink);
 
     if(proj.demo){
       const demoLink = document.createElement('a');
       demoLink.href = proj.demo; demoLink.target = '_blank'; demoLink.rel = 'noopener';
       demoLink.className = 'link-pill demo';
       demoLink.textContent = 'LIVE DEMO';
-      p.links.appendChild(demoLink);
+      r.links.appendChild(demoLink);
     }
 
 
     // stagger the panel reveal slightly after the hop lands
-    setTimeout(()=>{ p.wrap.classList.add('show'); }, 260);
+    setTimeout(()=>{
+      l.wrap.classList.add('show');
+      r.wrap.classList.add('show');}, 260);
 
     // platform color shift per level
     sky.style.filter = `hue-rotate(${(i*14)%360}deg)`;

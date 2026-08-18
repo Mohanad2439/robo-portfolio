@@ -134,10 +134,17 @@
     color:var(--paper); line-height:1.65; margin:0 0 14px;
     opacity:0.9;
   }
-  .proj-links{ display:flex; flex-direction:column; gap:8px; align-items:flex-start; }
+  .proj-links{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    align-items:flex-start;
+  }
   .side-panel.right .proj-links{ align-items:flex-end; }
   .link-pill{
-    font-size:13px;
+    font-size:15px;
+    width: 100%;
+    text-align: center;
     color:var(--sky-1);
     background:var(--lavender);
     padding:7px 10px;
@@ -145,19 +152,11 @@
     display:inline-block;
     border-bottom:3px solid #8b85e0;
     border-radius: 5px;
-    cursor: pointer;
   }
+
   .link-pill.demo{ background:var(--coral); border-bottom-color:#b4442c; }
   .link-pill:hover{
     filter:brightness(1.08); }
-
-  .level-tag{
-    position:absolute; top:50%; transform:translateY(-50%);
-    font-size:34px; color:var(--slate-edge);
-    opacity:0.5; pointer-events:none;
-  }
-  .level-tag.left{ left:8px; }
-  .level-tag.right{ right:8px; }
 
   /* ---------- tile track + robot ---------- */
   #track-viewport{
