@@ -12,7 +12,9 @@
   }
   *{box-sizing:border-box;}
   html,body{
-    margin:0; padding:0; height:100%;
+    margin:0;
+    padding:0;
+    height:100%;
     background:var(--sky-1);
     color:var(--paper);
     font-family:'Bungee', sans-serif;
@@ -118,40 +120,43 @@
     opacity:0; transition:opacity 0.35s ease, transform 0.35s ease;
     pointer-events:none;
   }
-  .side-panel.left{ left:0; transform:translate(-14px,-50%); }
+  .side-panel.left{
+    left:0;
+    transform:translate(-14px,-50%);
+  }
   .side-panel.right{ right:0; transform:translate(14px,-50%); }
   .side-panel.show{ opacity:1; transform:translateY(-50%); pointer-events:auto; }
 
   .proj-name{
-    font-size:26px;
+    font-size:1.6rem;
+    font-family: Bungee inline, sans-serif;
     color:var(--amber);
-    margin:0 0 10px;
+    margin:0 0 1.2rem;
     line-height:1.5;
     word-break:break-word;
   }
   .proj-desc{
-    font-size:14.5px;
-    color:var(--paper); line-height:1.65; margin:0 0 14px;
+    font-size:1rem;
+    color:var(--paper); line-height:1.65; margin:0 0 0.88rem;
     opacity:0.9;
   }
   .proj-links{
     display:flex;
     flex-direction:column;
-    gap:8px;
+    gap:0.5rem;
     align-items:flex-start;
   }
-  .side-panel.right .proj-links{ align-items:flex-end; }
   .link-pill{
-    font-size:15px;
+    font-size:0.94rem;
     width: 100%;
     text-align: center;
     color:var(--sky-1);
     background:var(--lavender);
-    padding:7px 10px;
+    padding:0.44rem 0.65rem;
     text-decoration:none;
     display:inline-block;
-    border-bottom:3px solid #8b85e0;
-    border-radius: 5px;
+    border-bottom:0.188rem solid #8b85e0;
+    border-radius: 0.4rem;
   }
 
   .link-pill.demo{ background:var(--coral); border-bottom-color:#b4442c; }
@@ -165,8 +170,13 @@
     display:flex; justify-content:center;
   }
   #track{
-    position:absolute; left:50%; bottom:0;
-    display:flex; flex-direction:column-reverse; align-items:center; gap:58px;
+    position:absolute;
+    left:50%;
+    bottom:0;
+    display:flex;
+    flex-direction:column-reverse;
+    align-items:center;
+    gap:58px;
     transition: transform 0.55s cubic-bezier(.3,.66,.2,1);
     will-change: transform;
   }
@@ -358,11 +368,7 @@
 
   #end-screen .card h1{ 
     color:var(--coral);
-  }
-  .restart-hint{
-    font-size:11px;
-    color:var(--mist);
-    margin-top:18px;
+    font-family: Bungee inline,sans-serif;
   }
 
   #restart-btn{
