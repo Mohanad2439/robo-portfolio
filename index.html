@@ -8,6 +8,7 @@
             @import url('https://fonts.googleapis.com/css2?family=Bungee&display=swap');
             @import url('https://fonts.googleapis.com/css2?family=Bungee&family=Bungee+Inline&display=swap');
         </style>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
 <body>
 <div id="app">
@@ -28,11 +29,9 @@
           <div class="proj-desc" id="desc-left"></div>
         </div>
         <div class="side-panel right" id="panel-right">
-          <div class="proj-links" id="links-right">
-            <button><a class="link-pill">View Code</a></button>
-            <button><a class="link-pill demo">Live Demo</a></button>
-          </div>
-        </div>
+            <a id="codeView" class="link-pill">View Code</a>
+            <a id="codeDemo" class="link-pill demo">Live Demo</a>
+       </div>
 
         <div id="track-viewport">
           <div id="track"></div>
@@ -91,7 +90,8 @@
     },
     right: {
       wrap: document.getElementById('panel-right'),
-      links: document.getElementById('links-right'),
+      codeView: document.getElementById('codeView'),
+      codeDemo: document.getElementById('codeDemo'),
     }
   };
 
@@ -187,13 +187,12 @@
     }
   }
 
-  // -------- render a project onto side panels --------
+ 
   function renderProject(i){
     const proj = projects[i];
     const left = 'left';
     const right = 'right';
 
-    // hide both, clear
     panels.left.wrap.classList.remove('show');
     panels.right.wrap.classList.remove('show');
 
@@ -202,24 +201,10 @@
     l.desc.textContent = proj.description;
 
     const r = panels[right];
-    r.links.innerHTML = '';
 
-    if(proj.demo){
-      const demoLink = document.createElement('a');
-      demoLink.href = proj.demo; demoLink.target = '_blank'; demoLink.rel = 'noopener';
-      demoLink.className = 'link-pill demo';
-      demoLink.textContent = 'LIVE DEMO';
-      r.links.appendChild(demoLink);
-    }
-
-
-    // stagger the panel reveal slightly after the hop lands
     setTimeout(()=>{
       l.wrap.classList.add('show');
       r.wrap.classList.add('show');}, 260);
-
-    // platform color shift per level
-    sky.style.filter = `hue-rotate(${(i*14)%360}deg)`;
   }
 
   function advance(){
