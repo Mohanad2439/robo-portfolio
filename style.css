@@ -1,7 +1,7 @@
   :root{
-    --sky-1:#0B1021;
-    --sky-2:#161d3d;
-    --slate:#232a52;
+    --sky-1:#a7d6ff;
+    --sky-2:#83cbf1;
+    --slate:#75c1ff;
     --slate-edge:#4a5488;
     --amber:#FFB347;
     --amber-dark:#c78a2e;
@@ -26,8 +26,8 @@
   #sky{
     position:absolute; inset:0;
     background:
-      radial-gradient(1200px 600px at 20% -10%, rgba(255,179,71,0.10), transparent 60%),
-      linear-gradient(180deg, var(--sky-1) 0%, var(--sky-2) 60%, #1b234a 100%);
+      radial-gradient(1200px 600px at 20% -10%, rgba(243, 225, 30, 0.193), transparent 60%),
+      linear-gradient(180deg, var(--sky-1) 0%, var(--sky-2) 60%, #71c1d5 100%);
       transition:filter 0.6s ease;
   }
   .star{
@@ -53,7 +53,8 @@
     text-align:center;
   }
   .card h1{
-    font-size:15px; line-height:1.7; color:var(--amber);
+    font-size:15px;
+    line-height:1.7; color:var(--amber);
     margin:0 0 6px;
   }
   .card .sub{ color:var(--mist); font-size:12px; margin:0 0 26px; line-height:1.6;}
@@ -68,21 +69,21 @@
     position:absolute; top:0; left:0; right:0; z-index:10;
     display:flex; align-items:center; justify-content:space-between;
     padding:16px 22px;
-    background:linear-gradient(180deg, rgba(11,16,33,0.85), transparent);
   }
   #hud .who{ font-size:11px; color:var(--mist); }
   #hud .who b{ color:var(--amber); }
   #rungs{ display:flex; gap:6px; flex-wrap:wrap; max-width:50vw; justify-content:center; }
   .rung{
-    width:9px; height:9px;
+    width:0.5rem; height:0.5rem;
     background:var(--slate-edge);
     transform:rotate(45deg);
   }
   .rung.done{ background:var(--amber); }
   .rung.current{ background:var(--coral); box-shadow:0 0 6px var(--coral); }
-  #counter{ font-size:11px; color:var(--mist); }
-  #counter b{ color:var(--lavender); }
 
+  #counter{
+    display: none;
+  }
   /* ---------- scene ---------- */
   #scene{
     position:absolute;
@@ -137,16 +138,17 @@
   .link-pill{
     font-size:0.94rem;
     font-family: 'Bungee', sans-serif;
-    color:var(--sky-1);
-    background:var(--lavender);
+    color:#ffff00;
+    background:#17b722;
     padding:0.44rem 0.65rem;
-    border-bottom:0.3rem solid #8b85e0;
+    border-bottom:0.3rem solid #183e18;
     border-radius: 0.4rem;
   }
 
   .link-pill.demo{
-    background:var(--coral); 
-    border-bottom-color:#b4442c;
+    background:#99602a; 
+    border-bottom-color:#60321a;
+    opacity: 0;
   }
   
 
@@ -154,7 +156,8 @@
   #track-viewport{
     position:absolute; left:0; right:0; bottom:0; top:0;
     overflow:hidden;
-    display:flex; justify-content:center;
+    display:flex;
+    justify-content:center;
   }
   #track{
     position:absolute;
@@ -189,8 +192,8 @@
   .tile.visited{ opacity:0.8; }
   .tile.active{
     opacity:1;
-    border-top-color:var(--coral);
-    box-shadow: 0 6px 0 rgba(0,0,0,0.35), 0 0 14px rgba(255,107,74,0.45);
+    border-top-color:#2b803d;
+    box-shadow: 0 6px 0 rgba(0,0,0,0.35), 0 0 14px rgb(39, 145, 64);
   }
   .tile-num{
     font-size:8px; color:var(--mist); font-family:'Press Start 2P', monospace;
@@ -333,8 +336,13 @@
 
   /* ---------- controls ---------- */
   #controls{
-    position:absolute; bottom:16px; left:0; right:0; text-align:center;
-    font-size:11px; color:var(--mist); z-index:5;
+    position:absolute;
+    bottom:16px;
+    left:0; right:0;
+    text-align:center;
+    font-size:11px;
+    color:var(--mist);
+    z-index:5;
   }
   #controls b{ color:var(--amber); }
 
@@ -346,7 +354,7 @@
     display:none;
     align-items:center;
     justify-content:center;
-    background:rgba(9,12,26,0.88);
+    background:#000000;
   }
 
   #end-screen .card{

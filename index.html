@@ -18,7 +18,7 @@
     <div id="hud">
       <div class="who">climbing <b id="who-name">Mohanad</b>'s tower</div>
       <div id="rungs"></div>
-      <div id="counter"><b id="idx-now">0</b> / <span id="idx-total">0</span></div>
+      <div id="counter"><b id="idx-now">0</b>/ <span id="idx-total">0</span></div>
     </div>
 
     <div id="scene">
@@ -53,7 +53,7 @@
       </div>
     </div>
 
-    <div id="controls">tap the robot / press <b>SPACE</b> to jump to the next project</div>
+    <div id="controls"> Use the <b>Arrow Keys</b> to navigate through the projects</div>
   </div>
 
   <!-- END -->
@@ -117,7 +117,6 @@
   }
   makeStars();
 
-  // -------- dummy project data (UI demo, no live GitHub call) --------
   const MY_PROJECTS = [
     { name:'Off-side Store', description:'A football/soccer-themed e-commerce store website, deployed via GitHub Pages. Built as a front-end web project showcasing product browsing for a sports apparel storefront', url:'https://github.com/Mohanad2439/Off-side_Store', demo:'https://example.com/synthwave-player' },
     { name:'Pixel Car Game', description:'A simple 2D car game built in C# using Windows Forms. Features basic car movement controls, collision detection, and score tracking, with a compiled executable available for direct play.', url:'https://github.com/Mohanad2439/Pixel-Car-Game', demo:null },
@@ -201,6 +200,10 @@
 
     const r = panels[right];
 
+    if(proj.demo!="null"){
+      panels.right.codeDemo.style.opacity='1';
+    }
+    
     setTimeout(()=>{
       l.wrap.classList.add('show');
       r.wrap.classList.add('show');}, 260);
@@ -224,6 +227,22 @@
       renderProject(index);
       busy = false;
     }, 180);
+  }
+
+ function back(){
+   if(index == 0) return;
+    busy = true;
+    index--;
+    robot.classList.remove('jump');
+    void robot.offsetWidth; 
+    robot.classList.add('jump');
+    moveTrackTo(index);
+    burstDust();
+    updateRungs();
+    setTimeout(()=>{
+      renderProject(index);
+      busy = false;
+    }, 150);
   }
 
   function finish(){
@@ -250,6 +269,14 @@
     if(e.code === 'Space' || e.code === 'ArrowUp'){
       e.preventDefault();
       advance();
+    }
+  });
+
+  robot.addEventListener('click', back);
+  window.addEventListener('keydown', (e)=>{
+    if(e.code === 'ArrowDown'){
+      e.preventDefault();
+      back();
     }
   });
   restartBtn.addEventListener('click', ()=>{
