@@ -16,7 +16,7 @@
   <!-- GAME -->
   <div id="game-screen">
     <div id="hud">
-      <div class="who">climbing <b id="who-name">Mohanad</b>'s tower</div>
+      <div class="who"> The <b id="who-name">Mohanad</b> tower</div>
       <div id="rungs"></div>
       <div id="counter"><b id="idx-now">0</b>/ <span id="idx-total">0</span></div>
     </div>
@@ -28,8 +28,8 @@
           <div class="proj-desc" id="desc-left"></div>
         </div>
         <div class="side-panel right" id="panel-right">
-            <button id="codeView" class="link-pill">View Code</button>
-            <button id="codeDemo" class="link-pill demo">Live Demo</button>
+            <a id="codeView" class="link-pill">View Code</a>
+            <a id="codeDemo" class="link-pill demo">Live Demo</a>
        </div>
 
         <div id="track-viewport">
@@ -45,7 +45,7 @@
             </div>
             <div class="r-arm l"></div>
             <div class="r-arm r"></div>
-            <div class="r-body"></div>
+            <div class="r-body" id="body"></div>
             <div class="r-leg l"></div>
             <div class="r-leg r"></div>
           </div>
@@ -80,6 +80,7 @@
   const restartBtn = document.getElementById('restart-btn');
   const endSummary = document.getElementById('end-summary');
   const sky = document.getElementById('sky');
+  const body = document.getElementById('body')
 
   const panels = {
     left: {
@@ -104,24 +105,11 @@
   let busy = false;
   let audioCtx = null;
 
-  // -------- starfield --------
-  function makeStars(){
-    for(let i=0;i<50;i++){
-      const s = document.createElement('div');
-      s.className = 'star' + (Math.random() < 0.25 ? ' big' : '');
-      s.style.left = Math.random()*100 + '%';
-      s.style.top = Math.random()*70 + '%';
-      s.style.opacity = (0.2 + Math.random()*0.6).toFixed(2);
-      sky.appendChild(s);
-    }
-  }
-  makeStars();
-
   const MY_PROJECTS = [
     { name:'Off-side Store', description:'A football/soccer-themed e-commerce store website, deployed via GitHub Pages. Built as a front-end web project showcasing product browsing for a sports apparel storefront', url:'https://github.com/Mohanad2439/Off-side_Store', demo:'https://example.com/synthwave-player' },
     { name:'Pixel Car Game', description:'A simple 2D car game built in C# using Windows Forms. Features basic car movement controls, collision detection, and score tracking, with a compiled executable available for direct play.', url:'https://github.com/Mohanad2439/Pixel-Car-Game', demo:null },
     { name:'MCPharm', description:'A PHP web application for an online pharmacy, featuring product search and browsing, a shopping cart, and an end-to-end checkout process (delivery details → order confirmation)', url:'https://github.com/Mohanad2439/MC-Pharm.-.', demo:null },
-  ]
+ ]
 
   // -------- tile track --------
   function buildTiles(){
@@ -266,7 +254,7 @@
 
   robot.addEventListener('click', advance);
   window.addEventListener('keydown', (e)=>{
-    if(e.code === 'Space' || e.code === 'ArrowUp'){
+    if( e.code === 'ArrowUp'){
       e.preventDefault();
       advance();
     }
