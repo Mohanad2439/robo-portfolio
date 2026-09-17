@@ -123,17 +123,17 @@
   .side-panel.show{ opacity:1; transform:translateY(-50%); pointer-events:auto; }
 
   .proj-name{
-    font-size:1.8rem;
+    font-size:1.8em;
     font-family: 'Bungee inline', sans-serif;
     color:var(--amber);
     text-shadow: 3px 3px #000000;
-    margin:0 0 1.2rem;
+    margin:0 0 1.2em;
     line-height:1.5;
     word-break:break-word;
   }
   .proj-desc{
-    font-size:1rem;
-    line-height:1.65; margin:0 0 0.88rem;
+    font-size:1em;
+    line-height:1.65; margin:0 0 0.88em;
     color:#f7f7f6;
     text-shadow: 3px 3px #393838e0;
     opacity:0.9;
@@ -152,6 +152,7 @@
     padding:0.44rem 0.65rem;
     border-bottom:0.3rem solid var(--amber-dark);
     border-radius: 0.4rem;
+    margin-bottom: 0.45rem;
   }
 
   .link-pill.demo{
@@ -161,6 +162,26 @@
   }
   
 
+  .arrowcnt{
+    margin-left: 65%;
+    margin-top: 68%;
+  }
+
+  .arrows{
+    background: none;
+    display: none;
+    border: none;
+    font-size: 7em;
+    opacity: 0.5;
+    color: var(--paper);
+    width: 2em;
+  }
+
+  @media (max-width: 768px) {
+  .arrows {
+    display: block;
+  }
+}
   /* ---------- tile track + robot ---------- */
   #track-viewport{
     position:absolute; left:0; right:0; bottom:0; top:0;
