@@ -52,8 +52,8 @@
           </div>
         </div>
             <div class="arrowcnt">
-              <button class="arrows" id="arrowUp" onclick="advance()">⬆</button>
-              <button class="arrows" id="arrowDown" onclick="back()">⬇</button>
+              <button class="arrows" id="arrowUp">⬆</button>
+              <button class="arrows" id="arrowDown">⬇</button>
             </div>
       </div>
     </div>
@@ -86,6 +86,8 @@
   const endSummary = document.getElementById('end-summary');
   const sky = document.getElementById('sky');
   const body = document.getElementById('body');
+  const arrowUp = document.getElementById('arrowUp');
+  const arrowDown = document.getElementById('arrowDown');
 
   const panels = {
     left: {
@@ -97,8 +99,6 @@
       wrap: document.getElementById('panel-right'),
       codeView: document.getElementById('codeView'),
       codeDemo: document.getElementById('codeDemo'),
-      up: document.getElementById('arrowUp'),
-      down: document.getElementById('arrowDown'),
     }
   };
 
@@ -259,7 +259,7 @@
     setTimeout(advance, 300);
   }
 
-    robot.addEventListener('click', advance);
+  arrowUp.addEventListener('click', advance);
   window.addEventListener('keydown', (e)=>{
     if( e.code === 'ArrowUp'){
       e.preventDefault();
@@ -267,7 +267,7 @@
     }
   });
 
-  track.addEventListener('click', back);
+  arrowDown.addEventListener('click', back);
   window.addEventListener('keydown', (e)=>{
     if(e.code === 'ArrowDown'){
       e.preventDefault();
