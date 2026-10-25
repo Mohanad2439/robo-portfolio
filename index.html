@@ -113,9 +113,12 @@
   let audioCtx = null;
 
   const MY_PROJECTS = [
-    { name:'Off-side Store', description:'A football/soccer-themed e-commerce store website, deployed via GitHub Pages. Built as a front-end web project showcasing product browsing for a sports apparel storefront', url:'https://github.com/Mohanad2439/Off-side_Store', demo:'https://example.com/synthwave-player' },
-    { name:'Pixel Car Game', description:'A simple 2D car game built in C# using Windows Forms. Features basic car movement controls, collision detection, and score tracking, with a compiled executable available for direct play.', url:'https://github.com/Mohanad2439/Pixel-Car-Game', demo:null },
-    { name:'MCPharm', description:'A PHP web application for an online pharmacy, featuring product search and browsing, a shopping cart, and an end-to-end checkout process (delivery details → order confirmation)', url:'https://github.com/Mohanad2439/MC-Pharm.-.', demo:null },
+    { name:'Off-side Store', description:'A football/soccer-themed e-commerce store website, deployed via GitHub Pages. Built as a front-end web project showcasing product browsing for a sports apparel storefront', 
+      url:'https://github.com/Mohanad2439/Off-side_Store', demo:null },
+    { name:'Pixel Car Game', description:'A simple 2D car game built in C# using Windows Forms. Features basic car movement controls, collision detection, and score tracking, with a compiled executable available for direct play.', 
+      url:'https://github.com/Mohanad2439/Pixel-Car-Game', demo:null },
+    { name:'MCPharm', description:'A PHP web application for an online pharmacy, featuring product search and browsing, a shopping cart, and an end-to-end checkout process (delivery details → order confirmation)', 
+      url:'https://github.com/Mohanad2439/MC-Pharm.-.', demo:null },
  ]
 
   // -------- tile track --------
@@ -165,7 +168,6 @@
     idxNow.textContent = Math.min(index+1, projects.length);
   }
 
-  // -------- particles --------
   function burstDust(){
     for(let i=0;i<8;i++){
       const p = document.createElement('div');
@@ -198,7 +200,19 @@
     if(proj.demo!="null"){
       panels.right.codeDemo.style.opacity='1';
     }
-    
+   panels.right.codeView.dataset.url = proj.url;
+   panels.right.codeDemo.dataset.url = proj.demo || '';
+
+   panels.right.codeView.addEventListener('click', () => {
+    if (panels.right.codeView.dataset.url) {
+      window.open(panels.right.codeView.dataset.url, '_blank', 'noopener');
+    }
+});
+   panels.right.codeDemo.addEventListener('click', () => {
+      if (panels.right.codeDemo.dataset.url) {
+        window.open(panels.right.codeDemo.dataset.url, '_blank', 'noopener');
+      }
+}); 
     setTimeout(()=>{
       l.wrap.classList.add('show');
       r.wrap.classList.add('show');}, 260);

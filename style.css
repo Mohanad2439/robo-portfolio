@@ -119,7 +119,7 @@
     left:0;
     transform:translate(-14px,-50%);
   }
-  .side-panel.right{ right:0; transform:translate(14px,-50%); }
+  .side-panel.right{ right:0; transform:translate(14px,-50%);z-index: 1; }
   .side-panel.show{ opacity:1; transform:translateY(-50%); pointer-events:auto; }
 
   .proj-name{
@@ -183,10 +183,15 @@
 }
   /* ---------- tile track + robot ---------- */
   #track-viewport{
-    position:absolute; left:0; right:0; bottom:0; top:0;
+    position:absolute;
+    left:0; 
+    right:0; 
+    bottom:0; 
+    top:0;
     overflow:hidden;
     display:flex;
     justify-content:center;
+    z-index: 0;
   }
   #track{
     position:absolute;
@@ -320,10 +325,22 @@
     left:2px;
     width:60px; 
     height:45px;
-    background:#0e0759;
-    border:2px solid #231543;
+    background:#1b1543;
+    border:2px solid #1b1543;
     border-bottom-right-radius:17px;
     border-bottom-left-radius:17px;
+  }
+  .r-body::before{
+   content:'';
+   position:absolute;
+   top:43%;
+   left:50%;
+   transform:translate(-50%,-50%);
+   width:45px;
+   height:33px;
+   background:#170b5f;
+   border-radius:14px;
+   box-shadow:0 0 8px rgba(27, 15, 193, 0.863);
   }
   .r-body::after{
     content:''; 
@@ -335,7 +352,7 @@
     height:22px; 
     border-radius:50%;
     background:var(--amber);
-    box-shadow:0 0 8px rgba(246, 214, 72, 0.7);
+    box-shadow:0 0 9px rgba(246, 214, 72, 0.841);
   }
   .r-arm{ 
     position:absolute; 
