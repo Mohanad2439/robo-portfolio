@@ -1,301 +1,476 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Robo Portfolio</title>
-        <meta name="viewport" content="width=device-width, initial-scale=0.85">
-        <link href="style.css" rel="stylesheet">
-        <style>
-            @import url('https://fonts.googleapis.com/css2?family=Bungee&display=swap');
-            @import url('https://fonts.googleapis.com/css2?family=Bungee&family=Bungee+Inline&display=swap');
-        </style>
-    </head>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mohanad Moawia — Portfolio</title>
+<meta name="description" content="Mohanad Moawia, software developer in Riyadh: walk the robot through the intro, skills, projects and credentials.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
 <body>
 <div id="app">
-  <div id="sky"></div>
+  <div class="sky" id="sky-day"></div>
+  <div class="sky" id="sky-night"></div>
 
-  <!-- GAME -->
-  <div id="game-screen">
-    <div id="hud">
-      <div class="who"> The <b id="who-name">Mohanad</b> tower</div>
-      <div id="rungs"></div>
-      <div id="counter"><b id="idx-now">0</b>/ <span id="idx-total">0</span></div>
-    </div>
+  <header>
+    <div class="logo display">MOHANAD.TOWER</div>
+    <nav id="nav" aria-label="Sections"></nav>
+    <div id="floor-count" class="mono"><span id="zone-name">HOME</span> · <b id="zone-pos">01 / 06</b><span id="floor-pos"></span></div>
+  </header>
 
-    <div id="scene">
-      <div id="stage">
-        <div class="side-panel left" id="panel-left">
-          <div class="proj-name" id="name-left"></div>
-          <div class="proj-desc" id="desc-left"></div>
-        </div>
-        <div class="side-panel right" id="panel-right">
-            <button id="codeView" class="link-pill">View Code</button>
-            <button id="codeDemo" class="link-pill demo">Live Demo</button>
-            
-       </div>
-
-        <div id="track-viewport">
-          <div id="track"></div>
-        </div>
-
-        <div id="robot-anchor">
-          <div id="robot">
-            <div class="r-antenna"></div>
-            <div class="r-head">
-              <div class="r-eye l"></div>
-              <div class="r-eye r"></div>
-            </div>
-            <div class="r-arm l"></div>
-            <div class="r-arm r"></div>
-            <div class="r-body" id="body"></div>
-            <div class="r-leg l"></div>
-            <div class="r-leg r"></div>
-          </div>
-        </div>
-            <div class="arrowcnt">
-              <button class="arrows" id="arrowUp">⬆</button>
-              <button class="arrows" id="arrowDown">⬇</button>
-            </div>
+  <main id="stage">
+    <div id="tower">
+      <div id="track"><div id="ground"></div></div>
+      <div id="robot-anchor">
+        <button id="robot" aria-label="Jump to the next stop">
+          <span class="r-antenna"></span>
+          <span class="r-head"><span class="r-eye l"></span><span class="r-eye r"></span></span>
+          <span class="r-arm l"></span><span class="r-arm r"></span>
+          <span class="r-leg l"></span><span class="r-leg r"></span>
+          <span class="r-body"></span>
+        </button>
       </div>
+      <div id="arrows">
+        <button id="arrow-left" aria-label="Previous section">◀</button>
+        <button id="arrow-right" aria-label="Next section">▶</button>
+        <button id="arrow-up" aria-label="Go up one floor">▲</button>
+        <button id="arrow-down" aria-label="Go down one floor">▼</button>
+      </div>
+      <div id="hint" class="mono"><b>← →</b> change section · <b>↑ ↓</b> browse floors</div>
     </div>
 
-    <div id="controls"> Use the <b>Arrow Keys</b> to navigate through the projects</div>
-  </div>
-
-  <!-- END -->
-  <div id="end-screen">
-    <div class="card">
-      <h1 class="pixel">TOP OF<br>THE TOWER</h1>
-      <p class="sub" id="end-summary"></p>
-      <button id="restart-btn" class="pixel">CLIMB AGAIN</button>
+    <div id="panels">
+      <section class="panel" id="panel-left" aria-live="polite"></section>
+      <section class="panel" id="panel-right"></section>
     </div>
-  </div>
+  </main>
 </div>
 
 <script>
 (function(){
-  const gameScreen = document.getElementById('game-screen');
-  const endScreen = document.getElementById('end-screen');
-  const robot = document.getElementById('robot');
-  const track = document.getElementById('track');
-  const stage = document.getElementById('stage');
-  const rungsEl = document.getElementById('rungs');
-  const idxNow = document.getElementById('idx-now');
-  const idxTotal = document.getElementById('idx-total');
-  const whoName = document.getElementById('who-name');
-  const restartBtn = document.getElementById('restart-btn');
-  const endSummary = document.getElementById('end-summary');
-  const sky = document.getElementById('sky');
-  const body = document.getElementById('body');
-  const arrowUp = document.getElementById('arrowUp');
-  const arrowDown = document.getElementById('arrowDown');
+  /* =====================================================================
+     CONTENT — edit this section.
+     The portfolio is a row of zones (the tabs in the header), walked
+     through with the LEFT / RIGHT arrows. A zone with more than one
+     floor (like Projects) is climbed with UP / DOWN.
 
-  const panels = {
-    left: {
-      wrap: document.getElementById('panel-left'),
-      name: document.getElementById('name-left'),
-      desc: document.getElementById('desc-left'),
-    },
-    right: {
-      wrap: document.getElementById('panel-right'),
-      codeView: document.getElementById('codeView'),
-      codeDemo: document.getElementById('codeDemo'),
-    }
-  };
+     Each zone:  { id, label, floors:[ … ] }   floors listed from the ground up
 
+     Button actions:
+       href:'…'       opens a link
+       go:'next'      moves on to the next stop (next floor, else next zone)
+       go:'<zone id>' jumps to that zone
+     ===================================================================== */
+  const GITHUB = 'https://github.com/Mohanad2439';
+
+  const ZONES = [
+    { id:'home', label:'Home', floors:[
+      { title:"Hi, I'm Mohanad.",
+        body:[
+          "I'm a software developer based in Riyadh, Saudi Arabia, with a background in computer engineering. I build interactive web and desktop applications: storefronts, full-stack web apps and the occasional game.",
+          "This portfolio is a little world. Walk the robot right to tour it, and climb wherever there's more to see."
+        ],
+        right:[
+          { t:'buttons', items:[
+            { label:'Start the tour ▶', go:'next', style:'primary' },
+            { label:'Skip to projects', go:'projects' },
+          ]},
+          { t:'note', text:'Left and right arrows change section. Up and down browse the floors inside a section.' },
+        ]},
+    ]},
+
+    { id:'about', label:'About', floors:[
+      { title:'Who I am',
+        body:[
+          "I'm a detail-oriented, self-driven developer with a background in computer engineering. I like taking an idea from a blank file to something people can click on, and I care about efficient, user-focused solutions.",
+          "Alongside development I work in logistics operations, which has given me real experience in client communication, process coordination and documentation. I'm comfortable in the terminal, especially on Linux, with a Neovim setup I configure myself in Lua."
+        ],
+        right:[
+          { t:'list', label:'QUICK FACTS', items:[
+            { title:'Based in', meta:'Riyadh, Saudi Arabia' },
+            { title:'Studied', meta:'Computer Engineering, Cyprus International University' },
+            { title:'Focus', meta:'Web and desktop applications' },
+          ]},
+          { t:'chips', label:'CURRENTLY EXPLORING', items:['React','Node.js','Lua','System design','Cloud architecture'] },
+        ]},
+    ]},
+
+    { id:'skills', label:'Skills', floors:[
+      { title:'What I work with',
+        body:[
+          "The languages and tools behind my projects. I'm comfortable working in the terminal, especially on Linux.",
+          "Core strengths: problem solving, debugging and agile collaboration."
+        ],
+        right:[
+          { t:'chips', label:'LANGUAGES', items:['C#','C++','PHP','JavaScript'] },
+          { t:'chips', label:'WEB',       items:['HTML5','CSS3','HTMX','REST API concepts'] },
+          { t:'chips', label:'DATA & CLOUD', items:['MySQL','PostgreSQL','MongoDB','Supabase','Microsoft Azure'] },
+          { t:'chips', label:'LINUX',     items:['Fedora','Arch Linux','Terminal / command line'] },
+          { t:'chips', label:'TOOLS',     items:['Git','VS Code','Neovim','XAMPP'] },
+        ]},
+    ]},
+
+    /* one floor per project: add a project by adding a floor */
+    { id:'projects', label:'Projects', floors:[
+      { title:'Off-side Store',
+        body:[ "A responsive e-commerce front end for a football jersey store. It has product listings, size and quantity selection, and totals that update in real time as you shop." ],
+        right:[
+          { t:'chips', label:'BUILT WITH', items:['HTML','CSS','JavaScript'] },
+          { t:'buttons', items:[
+            { label:'View code', href:'https://github.com/Mohanad2439/Off-side_Store' },
+            /* TODO: confirm this is the right live URL */
+            { label:'Live demo', href:'https://mohanad2439.github.io/Off-side_Store/', style:'hot' },
+          ]},
+        ]},
+
+      { title:'Pixel Car Game',
+        body:[ "A top-view desktop racing game with scoring, collision detection and audio feedback. Built with event-driven code to keep it modular and maintainable." ],
+        right:[
+          { t:'chips', label:'BUILT WITH', items:['C#','Windows Forms'] },
+          { t:'buttons', items:[
+            { label:'View code', href:'https://github.com/Mohanad2439/Pixel-Car-Game' },
+          ]},
+        ]},
+
+      { title:'MCPharm',
+        body:[ "A full-stack online pharmacy web app. It covers product search, cart logic and order confirmation, with efficient database queries and seamless front-end updates through HTMX." ],
+        right:[
+          { t:'chips', label:'BUILT WITH', items:['PHP','MySQL','HTMX','HTML','CSS'] },
+          { t:'buttons', items:[
+            { label:'View code', href:'https://github.com/Mohanad2439/MC-Pharm.-.' },
+          ]},
+        ]},
+
+      /* TODO: add the project's name and what you helped with, in your own words */
+      { title:'React + Node team project',
+        body:[
+          "I assisted on a team project built with React and Node.js. My part was a supporting one rather than writing most of the code, and it was my first time inside a component-based front end with a JavaScript back end.",
+          "It showed me how a larger codebase is organised and how a team divides the work, and it's why React is at the top of what I'm learning now."
+        ],
+        right:[
+          { t:'chips', label:'STACK', items:['React','Node.js'] },
+          { t:'list', label:'MY ROLE', items:[
+            { title:'Supporting contributor', meta:'Assisted the team alongside the main developers' },
+          ]},
+        ]},
+    ]},
+
+    /* two floors: education on the ground, work experience above */
+    { id:'credentials', label:'Credentials', floors:[
+      { title:'Education & certificates',
+        body:[ "I completed five semesters of a BSc in Computer Engineering at Cyprus International University. It gave me my foundation in programming, software design and how computers work underneath, and I've kept building on it through my own projects since.", "In October 2025 I also earned MongoDB's skill badge in MongoDB Basics." ],
+        right:[
+          { t:'list', label:'STUDIES', items:[
+            { title:'BSc Computer Engineering · 5 semesters completed', meta:'Cyprus International University · 2021 – 2024' },
+          ]},
+          { t:'list', label:'CERTIFICATES', items:[
+            { title:'MongoDB Basics for Students', meta:'MongoDB skill badge · Oct 2025' },
+          ]},
+          { t:'buttons', items:[
+            { label:'View badge', href:'https://www.credly.com/badges/06208f17-01d9-44f1-994e-a6b0b3bb83cb' },
+            { label:'Download CV', href:'Mohanad-Moawia-Resume.pdf', style:'hot' },
+          ]},
+        ]},
+
+      { title:'Experience',
+        body:[ "Operations Executive at Bridgeway Shipping and Clearing Services since February 2025. I started with the company in Kigali, Rwanda, and now work for them in Riyadh. It's a logistics role, and it has sharpened the communication and organisation I bring to technical work." ],
+        right:[
+          { t:'list', label:'WHAT I DO THERE', items:[
+            { title:'Coordinate export and import operations', meta:'Documentation and communication with agents, exporters and logistics partners' },
+            { title:'Work directly with clients', meta:'Meetings, quotations and timely follow-ups' },
+            { title:'Keep the records straight', meta:'Invoices, shipment tracking, digital and paper files' },
+          ]},
+          { t:'buttons', items:[ { label:'Download CV', href:'Mohanad-Moawia-Resume.pdf', style:'hot' } ] },
+        ]},
+    ]},
+
+    { id:'contact', label:'Contact', floors:[
+      { title:"Let's talk",
+        body:[ "That's the tour. If you'd like to work together or just say hello, here's where to find me." ],
+        right:[
+          { t:'buttons', items:[
+            { label:'Email me', href:'mailto:mohannados80@gmail.com', style:'primary' },
+            { label:'Call', href:'tel:+966579446415' },
+            { label:'GitHub', href:GITHUB },
+            { label:'Download CV', href:'Mohanad-Moawia-Resume.pdf' },
+          ]},
+          { t:'note', text:'mohannados80@gmail.com · +966 57 944 6415 · Riyadh, Saudi Arabia' },
+          { t:'buttons', items:[ { label:'◀ Back to the start', go:'home' } ] },
+        ]},
+    ]},
+  ];
+  /* ============================ end of content ============================ */
+
+  const STEP = 132;      // vertical distance between floors (keep in sync with --step in style.css)
+  const ZONE_GAP = 300;  // horizontal distance between zones
   const PALETTE = ['#232a52','#2a2f5c','#232447','#2c2456','#1f2b52','#26264f'];
-  const TILE_H = 24;
-  const TILE_GAP = 58;
-  const TILE_STEP = TILE_H + TILE_GAP;
+  const $ = id => document.getElementById(id);
+  const track = $('track'), robot = $('robot'), tower = $('tower');
+  const panelL = $('panel-left'), panelR = $('panel-right');
+  const navEl = $('nav'), skyNight = $('sky-night'), skyDay = $('sky-day');
+  const pad = n => String(n).padStart(2,'0');
+  const zoneIndex = id => ZONES.findIndex(z => z.id === id);
 
-  let projects = [];
-  let index = -1;
-  let busy = false;
-  let audioCtx = null;
+  let zone = 0, floor = 0, busy = false, wheelLock = false;
+  const clouds = [];
+  const floorsHere = () => ZONES[zone].floors;
 
-  const MY_PROJECTS = [
-    { name:'Off-side Store', description:'A football/soccer-themed e-commerce store website, deployed via GitHub Pages. Built as a front-end web project showcasing product browsing for a sports apparel storefront', 
-      url:'https://github.com/Mohanad2439/Off-side_Store', demo:null },
-    { name:'Pixel Car Game', description:'A simple 2D car game built in C# using Windows Forms. Features basic car movement controls, collision detection, and score tracking, with a compiled executable available for direct play.', 
-      url:'https://github.com/Mohanad2439/Pixel-Car-Game', demo:null },
-    { name:'MCPharm', description:'A PHP web application for an online pharmacy, featuring product search and browsing, a shopping cart, and an end-to-end checkout process (delivery details → order confirmation)', 
-      url:'https://github.com/Mohanad2439/MC-Pharm.-.', demo:null },
- ]
+  function el(tag, cls, text){
+    const n = document.createElement(tag);
+    if(cls) n.className = cls;
+    if(text != null) n.textContent = text;
+    return n;
+  }
 
-  // -------- tile track --------
-  function buildTiles(){
-    track.innerHTML = '';
-    track.style.transform = `translateX(-49%) translateY(0px)`;
-    projects.forEach((proj, i) => {
-      const tile = document.createElement('div');
-      tile.className = 'tile';
-      tile.style.background = PALETTE[i % PALETTE.length];
-      const num = document.createElement('div');
-      num.className = 'tile-num';
-      num.textContent = String(i+1).padStart(2,'0');
-      tile.appendChild(num);
-      track.appendChild(tile);
+  // ---------- one-time setup ----------
+  function build(){
+    ZONES.forEach((z,zi)=>{
+      // header tab
+      const b = el('button', null, z.label);
+      b.addEventListener('click', ()=>move(zi, 0));
+      navEl.appendChild(b);
+
+      // column of floor tiles
+      const col = el('div','zone');
+      col.style.left = (zi * ZONE_GAP) + 'px';
+      z.floors.forEach((f,fi)=>{
+        const text = fi === 0 ? z.label.toUpperCase() : pad(fi+1);
+        const t = el('div','tile mono', text);
+        t.dataset.zone = zi; t.dataset.floor = fi;
+        t.style.background = PALETTE[(zi+fi) % PALETTE.length];
+        col.appendChild(t);
+      });
+      track.appendChild(col);
+    });
+
+    for(let i=0;i<60;i++){
+      const s = el('div','star');
+      s.style.left = Math.random()*100+'%';
+      s.style.top = Math.random()*75+'%';
+      s.style.opacity = (0.25+Math.random()*0.7).toFixed(2);
+      if(Math.random()<0.2){ s.style.width = s.style.height = '3px'; }
+      skyNight.appendChild(s);
+    }
+    [[8,18,120],[70,10,160],[82,42,100],[18,52,140]].forEach(([x,y,w])=>{
+      const c = el('div','cloud');
+      c.style.left = x+'%'; c.style.top = y+'%'; c.style.width = w+'px';
+      skyDay.appendChild(c); clouds.push(c);
     });
   }
-  function moveTrackTo(i){
-    track.style.transform = `translateX(-50%) translateY(${i*TILE_STEP}px)`;
-    const tiles = track.children;
-    for(let t=0;t<tiles.length;t++){
-      tiles[t].classList.toggle('active', t === i);
-      tiles[t].classList.toggle('visited', t < i);
-    }
+
+  // ---------- panels ----------
+  function runAction(x){
+    if(x.go === 'next') forward();
+    else move(zoneIndex(x.go), 0);
   }
 
-  // -------- HUD --------
-  function buildRungs(){
-    rungsEl.innerHTML = '';
-    const max = 24;
-    const total = projects.length;
-    const showCount = Math.min(total, max);
-    for(let i=0;i<showCount;i++){
-      const d = document.createElement('div');
-      d.className = 'rung';
-      d.dataset.i = i;
-      rungsEl.appendChild(d);
+  function renderBlock(b){
+    const wrap = el('div','block');
+    if(b.label) wrap.appendChild(el('p','label mono', b.label));
+    if(b.t === 'chips'){
+      const c = el('div','chips');
+      b.items.forEach(x=>c.appendChild(el('span','chip',x)));
+      wrap.appendChild(c);
+    } else if(b.t === 'list'){
+      const ul = el('ul','list');
+      b.items.forEach(x=>{
+        const li = el('li');
+        li.appendChild(el('div','t',x.title));
+        if(x.meta) li.appendChild(el('div','m',x.meta));
+        ul.appendChild(li);
+      });
+      wrap.appendChild(ul);
+    } else if(b.t === 'buttons'){
+      const row = el('div','btns');
+      b.items.forEach(x=>{
+        let n;
+        if(x.href){
+          n = el('a', 'btn', x.label);
+          n.href = x.href;
+          if(/^https?:/.test(x.href)){ n.target = '_blank'; n.rel = 'noopener'; }
+        } else {
+          n = el('button', 'btn', x.label);
+          n.addEventListener('click', ()=>runAction(x));
+        }
+        if(x.style) n.classList.add(x.style);
+        row.appendChild(n);
+      });
+      wrap.appendChild(row);
+    } else if(b.t === 'note'){
+      wrap.appendChild(el('p','note',b.text));
     }
-    idxTotal.textContent = total;
+    return wrap;
   }
-  function updateRungs(){
-    const kids = rungsEl.children;
-    for(let i=0;i<kids.length;i++){
-      kids[i].classList.toggle('done', i < index);
-      kids[i].classList.toggle('current', i === index);
-    }
-    idxNow.textContent = Math.min(index+1, projects.length);
+
+  // floors in a multi-floor zone all get the same "where next" buttons,
+  // so they don't have to be repeated in the content above
+  function whereNextBlock(){
+    const n = floorsHere().length, items = [];
+    const next = ZONES[zone+1];
+    if(floor < n-1) items.push({ label:'Next floor ▲', go:'next', style:'primary' });
+    if(next) items.push({ label:`${next.label} ▶`, go:next.id, style: floor === n-1 ? 'primary' : '' });
+    return { t:'buttons', label:'WHERE NEXT', items };
+  }
+
+  function renderFloor(){
+    const z = ZONES[zone], f = z.floors[floor], n = z.floors.length;
+    const lobby = zone === 0 && floor === 0;
+    const kicker = n > 1
+      ? `${z.label.toUpperCase()} · ${floor+1} OF ${n}`
+      : `${pad(zone+1)} · ${z.label.toUpperCase()}`;
+    panelL.textContent = ''; panelR.textContent = '';
+    panelL.appendChild(el('p','kicker mono', kicker));
+    panelL.appendChild(el(lobby ? 'h1' : 'h2', 'title display' + (lobby ? ' big' : ''), f.title));
+    const body = el('div','body');
+    f.body.forEach(p=>body.appendChild(el('p',null,p)));
+    panelL.appendChild(body);
+    (f.right || []).forEach(b=>panelR.appendChild(renderBlock(b)));
+    if(n > 1) panelR.appendChild(renderBlock(whereNextBlock()));
+    panelL.scrollTop = 0; $('panels').scrollTop = 0;
+  }
+
+  // ---------- state → screen ----------
+  function paint(){
+    const z = ZONES[zone], n = z.floors.length;
+
+    // slide the world so the current floor sits under the robot
+    track.style.transform = `translate(${-zone*ZONE_GAP}px, ${floor*STEP}px)`;
+    track.querySelectorAll('.tile').forEach(t=>{
+      const tz = +t.dataset.zone, tf = +t.dataset.floor;
+      t.classList.toggle('active', tz === zone && tf === floor);
+      t.classList.toggle('visited', tz < zone || (tz === zone && tf < floor));
+    });
+
+    [...navEl.children].forEach((b,i)=>{
+      b.classList.toggle('active', i === zone);
+      if(i === zone){ b.setAttribute('aria-current','true'); } else { b.removeAttribute('aria-current'); }
+    });
+
+    $('zone-name').textContent = z.label.toUpperCase();
+    $('zone-pos').textContent = `${pad(zone+1)} / ${pad(ZONES.length)}`;
+    $('floor-pos').textContent = n > 1 ? ` · FLOOR ${floor+1} / ${n}` : '';
+
+    $('arrow-left').disabled  = zone <= 0;
+    $('arrow-right').disabled = zone >= ZONES.length - 1;
+    $('arrow-up').disabled    = floor >= n - 1;
+    $('arrow-down').disabled  = floor <= 0;
+    $('arrows').classList.toggle('single', n === 1);
+
+    // sky goes from day to night as you travel right; clouds drift past
+    const p = zone / (ZONES.length - 1);
+    skyNight.style.opacity = p;
+    clouds.forEach((c,i)=>{
+      c.style.transform = `translate(${-zone*(40+i*18)}px, ${floor*(30+i*12)}px)`;
+      c.style.opacity = Math.max(0, 1 - p*1.6);
+    });
+
+    const atStart = zone === 0 && floor === 0;
+    try{ history.replaceState(null, '', atStart ? location.pathname + location.search : '#'+z.id); }catch(e){}
   }
 
   function burstDust(){
     for(let i=0;i<8;i++){
-      const p = document.createElement('div');
-      p.className = 'dust';
-      const angle = Math.random()*Math.PI - Math.PI/2 - Math.PI/2;
-      const dist = 20 + Math.random()*30;
-      p.style.setProperty('--dx', Math.cos(angle)*dist + 'px');
-      p.style.setProperty('--dy', Math.abs(Math.sin(angle))*dist*-1 + 'px');
-      p.style.animation = 'dustpop 0.5s ease-out forwards';
-      stage.appendChild(p);
-      setTimeout(()=>p.remove(), 550);
+      const d = el('div','dust');
+      const a = Math.PI + Math.random()*Math.PI, dist = 22 + Math.random()*30;
+      d.style.setProperty('--dx', Math.cos(a)*dist+'px');
+      d.style.setProperty('--dy', Math.sin(a)*dist*0.6+'px');
+      tower.appendChild(d);
+      setTimeout(()=>d.remove(), 550);
     }
   }
 
- 
-  function renderProject(i){
-    const proj = projects[i];
-    const left = 'left';
-    const right = 'right';
-
-    panels.left.wrap.classList.remove('show');
-    panels.right.wrap.classList.remove('show');
-
-    const l = panels[left];
-    l.name.textContent = proj.name;
-    l.desc.textContent = proj.description;
-
-    const r = panels[right];
-
-    if(proj.demo!="null"){
-      panels.right.codeDemo.style.opacity='1';
-    }
-   panels.right.codeView.dataset.url = proj.url;
-   panels.right.codeDemo.dataset.url = proj.demo || '';
-
-   panels.right.codeView.addEventListener('click', () => {
-    if (panels.right.codeView.dataset.url) {
-      window.open(panels.right.codeView.dataset.url, '_blank', 'noopener');
-    }
-});
-   panels.right.codeDemo.addEventListener('click', () => {
-      if (panels.right.codeDemo.dataset.url) {
-        window.open(panels.right.codeDemo.dataset.url, '_blank', 'noopener');
-      }
-}); 
-    setTimeout(()=>{
-      l.wrap.classList.add('show');
-      r.wrap.classList.add('show');}, 260);
-  }
-
-  function advance(){
-    if(busy) return;
-    if(index + 1 >= projects.length){
-      finish();
-      return;
-    }
+  // ---------- moving around ----------
+  // every move goes through here: jump to floor f of zone z
+  function move(z, f){
+    if(busy || z < 0 || z >= ZONES.length) return;
+    if(f < 0 || f >= ZONES[z].floors.length) return;
+    if(z === zone && f === floor) return;
     busy = true;
-    index++;
-    robot.classList.remove('jump');
-    void robot.offsetWidth; // restart animation
-    robot.classList.add('jump');
-    moveTrackTo(index);
+    const dist = Math.max(Math.abs(z - zone), Math.abs(f - floor));
+    const dur = Math.min(0.55 + (dist-1)*0.12, 1.1);
+    track.style.transitionDuration = dur + 's';
+    zone = z; floor = f;
+
+    robot.classList.remove('jump'); void robot.offsetWidth; robot.classList.add('jump');
     burstDust();
-    updateRungs();
+    panelL.classList.remove('show'); panelR.classList.remove('show');
+    paint();
+
     setTimeout(()=>{
-      renderProject(index);
-      busy = false;
-    }, 180);
+      renderFloor();
+      panelL.classList.add('show'); panelR.classList.add('show');
+    }, 240);
+    setTimeout(()=>{ busy = false; }, Math.max(450, dur*1000 - 100));
   }
 
- function back(){
-   if(index == 0) return;
-    busy = true;
-    index--;
-    robot.classList.remove('jump');
-    void robot.offsetWidth; 
-    robot.classList.add('jump');
-    moveTrackTo(index);
-    burstDust();
-    updateRungs();
-    setTimeout(()=>{
-      renderProject(index);
-      busy = false;
-    }, 150);
+  const left  = () => move(zone-1, 0);       // changing zone always lands on the ground floor
+  const right = () => move(zone+1, 0);
+  const up    = () => move(zone, floor+1);
+  const down  = () => move(zone, floor-1);
+
+  // "next stop" in reading order: up through this zone's floors, then on to the next zone
+  function forward(){
+    if(floor < floorsHere().length - 1) up();
+    else if(zone < ZONES.length - 1) right();
+    else move(0, 0);
+  }
+  function back(){
+    if(floor > 0) down(); else left();
   }
 
-  function finish(){
-    panels.left.wrap.classList.remove('show');
-    panels.right.wrap.classList.remove('show');
-    gameScreen.style.display = 'none';
-    endScreen.style.display = 'flex';
-    endSummary.textContent = `You climbed through ${projects.length} project${projects.length===1?'':'s'} in ${whoName.textContent}'s tower. Nice work, robot.`;
-  }
+  // ---------- input ----------
+  robot.addEventListener('click', forward);
+  $('arrow-left').addEventListener('click', left);
+  $('arrow-right').addEventListener('click', right);
+  $('arrow-up').addEventListener('click', up);
+  $('arrow-down').addEventListener('click', down);
 
-  function launch(){
-    gameScreen.style.display = 'block';
-    endScreen.style.display = 'none';
-    index = -1;
-    sky.style.filter = 'none';
-    buildTiles();
-    buildRungs();
-    updateRungs();
-    setTimeout(advance, 300);
-  }
-
-  arrowUp.addEventListener('click', advance);
-  window.addEventListener('keydown', (e)=>{
-    if( e.code === 'ArrowUp'){
-      e.preventDefault();
-      advance();
-    }
+  const KEYS = {
+    ArrowLeft:left, ArrowRight:right, ArrowUp:up, ArrowDown:down,
+    Home:()=>move(0,0), End:()=>move(ZONES.length-1,0),
+  };
+  window.addEventListener('keydown', e=>{
+    if(e.target.closest && e.target.closest('input,textarea')) return;
+    if(KEYS[e.code]){ e.preventDefault(); KEYS[e.code](); }
   });
 
-  arrowDown.addEventListener('click', back);
-  window.addEventListener('keydown', (e)=>{
-    if(e.code === 'ArrowDown'){
-      e.preventDefault();
-      back();
-    }
-  });
-  restartBtn.addEventListener('click', ()=>{
-    projects = MY_PROJECTS;
-    launch();
-  });
+  // mouse wheel walks the whole tour in order: scroll down = next stop, up = previous
+  function canScroll(node){
+    const box = node && node.closest && (node.closest('.panel') || node.closest('#panels'));
+    return [box, $('panels')].some(b => b && b.contains(node) && b.scrollHeight > b.clientHeight + 2);
+  }
+  window.addEventListener('wheel', e=>{
+    const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+    if(wheelLock || Math.abs(d) < 12 || canScroll(e.target)) return;
+    wheelLock = true; setTimeout(()=>{ wheelLock = false; }, 650);
+    if(d > 0) forward(); else back();
+  }, { passive:true });
 
-  projects=MY_PROJECTS;
-  launch();
+  // swipe on the tower area: sideways changes zone, vertical changes floor
+  let touch = null;
+  window.addEventListener('touchstart', e=>{
+    touch = e.target.closest('#panels, header') ? null : { x:e.touches[0].clientX, y:e.touches[0].clientY };
+  }, { passive:true });
+  window.addEventListener('touchend', e=>{
+    if(!touch) return;
+    const dx = e.changedTouches[0].clientX - touch.x, dy = e.changedTouches[0].clientY - touch.y;
+    touch = null;
+    if(Math.max(Math.abs(dx), Math.abs(dy)) < 40) return;
+    if(Math.abs(dx) > Math.abs(dy)){ if(dx < 0) right(); else left(); }
+    else { if(dy > 0) up(); else down(); }
+  }, { passive:true });
 
+  // ---------- boot ----------
+  // deep link: index.html#projects walks straight to that zone
+  const start = zoneIndex(location.hash.slice(1));
+  build();
+  track.style.transitionDuration = '0s';
+  renderFloor();
+  paint();
+  requestAnimationFrame(()=>{ panelL.classList.add('show'); panelR.classList.add('show'); });
+  if(start > 0){ setTimeout(()=>move(start, 0), 500); }
 })();
 </script>
 </body>
