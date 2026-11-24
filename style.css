@@ -133,7 +133,7 @@ nav {
   scrollbar-width: none;
 }
 
-nav: :-webkit-scrollbar {
+nav::-webkit-scrollbar {
   display: none;
 }
 
