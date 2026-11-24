@@ -555,6 +555,38 @@ nav button.active {
   transition: opacity .25s ease, transform .25s ease;
 }
 
+/* Where a box's text is cut off for scrolling, the text fades out smoothly
+   (the script masks .panel-inner with an eased gradient at the cut line).
+   On phones the whole column scrolls, so the box itself is cut too: the script
+   rounds its corners there, and this piece adds the bottom border and shadow. */
+#cut-edge {
+  display: none;
+  position: absolute;
+  z-index: 4;
+  pointer-events: none;
+  border: 2px solid var(--edge);
+  border-top: none;
+  border-radius: 0 0 14px 14px;
+}
+
+/* the box's shadow below the cut. The shape reaches up the box's sides (--rise,
+   set by the script) so the shadow has a real box's shape, but only the part
+   below the cut (and the rounded corners) is shown: above it, the box's own
+   shadow is already there */
+#cut-edge::after {
+  content: '';
+  position: absolute;
+  inset: calc(-1 * var(--rise, 80px)) -2px -2px -2px;
+  border-radius: 0 0 14px 14px;
+  box-shadow: 0 14px 22px -8px rgba(0,0,0,.38), 0 3px 6px -2px rgba(0,0,0,.18);
+  clip-path: polygon(-60px 100%, 0 100%, 0 calc(100% - 14px), 100% calc(100% - 14px), 100% 100%,
+                     calc(100% + 60px) 100%, calc(100% + 60px) calc(100% + 70px), -60px calc(100% + 70px));
+}
+
+#cut-edge.on {
+  display: block;
+}
+
 .panel.show {
   opacity: 1;
   transform: none;
@@ -727,6 +759,7 @@ nav button.active {
     overflow: visible;
     padding: 16px;
     flex: none;
+    box-shadow: 0 14px 22px -8px rgba(0,0,0,.38), 0 3px 6px -2px rgba(0,0,0,.18);
   }
   .title {
     font-size: 20px;
